@@ -1,0 +1,154 @@
+html {
+  color: #333;
+  font-size: 18px;
+  height: 100%;
+}
+body {
+  align-items: center;
+  background: #f9f9f9;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+}
+section {
+  background: #fff;
+  border: 1px solid #e9e9e9;
+  border-radius: 3px;
+  margin: auto;
+  max-width: 800px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+
+  form {
+    background: #fff;
+    font-size: 0;
+    padding: 10px 50px 30px;
+    position: relative;
+    text-align: center;
+    z-index: 2;
+
+    &.secondary {
+      background: #fcfcfc;
+      border-top: 1px solid #e9e9e9;
+      border-bottom: 1px solid #e9e9e9;
+      margin-bottom: -1px;
+      padding-top: 30px;
+      position: relative;
+        top: 0;
+      z-index: 1;
+    }
+
+    .half {
+      display: inline-block;
+      text-align: center;
+      vertical-align: top;
+    }
+    .spacer {
+      display: inline-block;
+      width: 80px;
+    }
+  }
+  label {
+    font-size: 1rem;
+    padding-right: 10px;
+    text-align: right;
+  }
+  [type="text"],
+  [type="password"],
+  [type="number"] {
+    border: 1px solid #aaa;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 5px 10px;
+    width: 220px;
+
+    &.hide {
+      display: none;
+    }
+  }
+  [type="submit"],
+  .logout {
+    background: #5d9e9a;
+    border: none;
+    border-radius: 3px;
+    color: #fff;
+    cursor: pointer;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: inline-block;
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.2rem;
+    margin: 30px auto 0;
+    padding: 10px 0;
+    -webkit-transition: background .2s ease;
+    -o-transition: background .2s ease;
+    -moz-transition: background .2s ease;
+    -ms-transition: background .2s ease;
+    transition: background .2s ease;
+    width: 150px;
+
+    &:hover {
+      background: #6daeaa;
+    }
+    &[value^="Start"] {
+      background: #5d9e9a;
+
+      &:hover {
+        background: #6daeaa;
+      }
+    }
+    &[value^="Stop"] {
+      background: #ae5d5d;
+
+      &:hover {
+        background: #be6d6d;
+      }
+    }
+  }
+  .logout {
+    background: #fcfcfc;
+    color: #333;
+    margin-left: 20px;
+
+    &:hover {
+      background: #ececec;
+    }
+  }
+}
+h1 {
+  background: url('background.jpg');
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  color: #fff;
+  font-size: 40px;
+  font-weight: bold;
+  padding: 170px 10px 50px;
+  text-align: center;
+  text-shadow: 0 0 70px #000;
+  width: 100%;
+}
+p {
+  background: #fff;
+  font-size: 1rem;
+  padding: 20px 10px;
+  position: relative;
+  text-align: center;
+  z-index: 3;
+
+  &#error,
+  &#error2 {
+    background: none;
+    color: #ae5d5d;
+    padding-bottom: 0;
+  }
+}
