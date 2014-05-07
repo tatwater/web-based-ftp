@@ -27,8 +27,8 @@ import jhttp2.*;
  * Description: This HTTP/FTP server serves files via both protocols to different clients
  */
 public class Server extends Thread {
-	HTTPServer httpServer;
-	EarlGray ftpServer;
+	static HTTPServer httpServer;
+	static EarlGray ftpServer;
 
 	/**
 	 * Create new instance of Server
@@ -42,9 +42,10 @@ public class Server extends Thread {
 		
 		System.out.print("Initializing HTTP... ");
 		this.httpServer = new HTTPServer(httpPort, directoryPath);
+		System.out.println("HTTP initialized.")
 		this.httpServer.start();
-		System.out.print("HTTP initialized.\nHTTP started.\nInitializing FTP... ");
-		this.ftpServer = new FTPServer(directoryPath);
+		System.out.print("HTTP started.\nInitializing FTP... ");
+		this.ftpServer = new EarlGray(directoryPath);
 		System.out.println("FTP initialized.\nTo start FTP, use web service: 'localhost/admin/'.");
 	}
 

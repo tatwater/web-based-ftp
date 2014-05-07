@@ -150,7 +150,7 @@ public class HTTPServer extends Thread {
 	 * @author Jake Junda
 	 * @since Alpha
 	 */
-	private boolean stopServer() throws IOException {
+	public boolean stopServer() throws IOException {
 		this.running = false;
 		for (HTTPClient client : this.activeClients) {
 			while (!client.shutThingsDown(0)); // Wait for the client to shut down before proceeding

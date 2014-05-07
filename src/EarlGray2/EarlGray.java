@@ -65,7 +65,7 @@ public class EarlGray extends Thread {
 	 * @since Alpha (04/03/14)
 	 * @exception IOException
 	 */
-	public EarlGray(int port, String directoryPath) throws IOException {
+	public EarlGray(String directoryPath) throws IOException {
 		this.clientInstList = new ArrayList<EGClientInst>();
 		this.directory=new File(directoryPath);
 		if(!this.directory.isDirectory()) {
@@ -182,7 +182,7 @@ public class EarlGray extends Thread {
 	 * @since Alpha
 	 * @exception IOException
 	 */
-	private boolean stopServer() throws IOException {
+	public boolean stopServer() throws IOException {
 		this.running = false;
 		for (EGClientInst client : clientInstList) {
 			while (!client.shutThingsDown(1)); // wait for the client to shut down before proceeding
