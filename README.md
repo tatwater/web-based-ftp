@@ -30,7 +30,7 @@ Submission: Submit through Moodle. Deadline for submission is 5/9/2014 11:59pm E
 
 You need to submit
 
--          Your source code, together with a short README.txt description of how to compile your code, what files are included for this project. A build script would be better.
+- Your source code, together with a short README.txt description of how to compile your code, what files are included for this project. A build script would be better.
 
--          If you have multiple files, you need to zip it before submission.
+- If you have multiple files, you need to zip it before submission.
 
