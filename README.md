@@ -8,11 +8,11 @@ A Java implementation of a HTTP server with FTP web client
 
 Goal: For the final project, you are required to put your previous work together and make a web-based FTP server.
 
--          You need to provide a web-based control UI using your HTTP server from project#3. You need to enable/disable your FTP server from the control webpage.
+- You need to provide a web-based control UI using your HTTP server from project#3. You need to enable/disable your FTP server from the control webpage.
 
--          The control page should let user input their ID and password (no need to validate password), port number. Then let the user to select enable/disable radio button, then apply (or OK) the change. The FTP server should work/stop working based on the configuration.
+- The control page should let user input their ID and password (no need to validate password), port number. Then let the user to select enable/disable radio button, then apply (or OK) the change. The FTP server should work/stop working based on the configuration.
 
--          Log the status of the FTP server (who and when login, and what operation he/she did).
+- Log the status of the FTP server (who and when login, and what operation he/she did).
 
  
 
