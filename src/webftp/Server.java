@@ -48,6 +48,17 @@ public class Server extends Thread {
 		this.ftpServer = new EarlGray(directoryPath);
 		System.out.println("FTP initialized.\nTo start FTP, use web service: 'localhost/admin/'.");
 	}
+	
+	/**
+	 * Calls the FTP and HTTP server to close down
+	 * 
+	 * @author Teagan Atwater
+	 * @author Jake Junda
+	 * @since Alpha
+	 */
+	public boolean stopServer() throws IOException {
+		//TODO Go to the two servers a close them
+	}
 
 	/**
 	 * Intiate the server

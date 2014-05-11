@@ -144,6 +144,17 @@ public class HTTPServer extends Thread {
 	}
 	
 	/**
+	 * Get function
+	 *
+	 * @author Jake Junda
+	 * @since Alpha
+	 */
+	public void get() {
+		System.out.println("Get function called");
+
+	}
+	
+	/**
 	 * Closes down all user sessions and stops the server
 	 * 
 	 * @author Teagan Atwater
