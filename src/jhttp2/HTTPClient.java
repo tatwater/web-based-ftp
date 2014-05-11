@@ -33,6 +33,7 @@ public class HTTPClient extends Thread {
 	int requestNum;
 	ArrayList<String> input = new ArrayList<String>();
 
+	//TODO need to create a get function, for dealing with the webFtp Server.
 	
 	/**
 	 * This constructs a Thread that

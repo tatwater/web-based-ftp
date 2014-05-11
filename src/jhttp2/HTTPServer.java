@@ -10,6 +10,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+//TODO add parent webftp server as attribute
+	//TODO all parent to close 	//TODO allow parent to close jhttp server
+	//TODO allow parent jhttp to communicate to parent
+	//TODO allow parent to tell jhttp server that login of FTP user is good
+
 /*
  * Authors: Tony Knapp, Teagan Atwater, Jake Junda
  * Started: April 28, 2014 (Alpha)
