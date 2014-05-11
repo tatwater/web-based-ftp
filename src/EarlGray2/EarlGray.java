@@ -71,7 +71,7 @@ public class EarlGray extends Thread {
 		if(!this.directory.isDirectory()) {
 			this.directory.mkdir();
 		}
-
+//@tatwater: Where did the port variable go? 
 		try {
 			this.out = new PrintWriter(new BufferedWriter(new FileWriter(inFile, true)));
 			this.incoming = new ServerSocket(port); // create server socket on designated port

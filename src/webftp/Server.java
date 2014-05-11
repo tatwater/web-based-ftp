@@ -38,17 +38,17 @@ public class Server extends Thread {
 	 */
 	public Server() throws IOException {
 		int httpPort = 0;
-		String directoryPath = "";
-		
+		String directoryPath = "";		
 		System.out.print("Initializing HTTP... ");
 		this.httpServer = new HTTPServer(httpPort, directoryPath);
-		System.out.println("HTTP initialized.")
+		System.out.println("HTTP initialized.");
 		this.httpServer.start();
 		System.out.print("HTTP started.\nInitializing FTP... ");
 		this.ftpServer = new EarlGray(directoryPath);
 		System.out.println("FTP initialized.\nTo start FTP, use web service: 'localhost/admin/'.");
 	}
 	
+
 	/**
 	 * Calls the FTP and HTTP server to close down
 	 * 
@@ -59,6 +59,16 @@ public class Server extends Thread {
 	public boolean stopServer() throws IOException {
 		//TODO Go to the two servers a close them
 	}
+	//TODO create a server initializer, starts http and intializes ftp.
+	
+	//TODO create a server run function, maintains http and ftp servers. Looks for FTP server start and stop commands and  sub methods executes.
+	
+	//TODO Create sub methods for handeling FTP configuration commands:
+		//TODO Check login creditionals for FTP user
+		//TODO if Logged in, allow start of FTP on port, return port number
+		//TODO if Logged in, allow quit of FTP, return status
+	
+	//TODO create a quit server function.
 
 	/**
 	 * Intiate the server
