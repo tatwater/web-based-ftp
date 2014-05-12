@@ -32,6 +32,8 @@ public class HTTPClient extends Thread {
 	boolean isSending = false;	
 	int requestNum;
 	ArrayList<String> input = new ArrayList<String>();
+	private webftp.Server parentServer;
+
 
 	//TODO need to create a get function, for dealing with the webFtp Server.
 	
@@ -42,13 +44,14 @@ public class HTTPClient extends Thread {
 	 * @since Alpha (04/29/2014)
 	 * @param Socket, Server
 	 */
-	public HTTPClient(Socket cSoc, HTTPServer server, File parentFolder, int count) throws IOException {
+	public HTTPClient(Socket cSoc, HTTPServer server, File parentFolder, int count, webftp.Server parentServer) throws IOException {
 		this.controlSoc = cSoc; // attach to client socket
 		this.controlIn = new BufferedReader(new InputStreamReader(controlSoc.getInputStream()));
 		this.controlOut = new DataOutputStream(controlSoc.getOutputStream());
 		this.server = server;
 		this.parentDir = parentFolder;
 		this.requestNum = count;
+		this.parentServer = parentServer;
 		
 		System.out.println(this.requestNum + "New Request");
 	}
@@ -105,6 +108,36 @@ public class HTTPClient extends Thread {
     }
     if (path.equalsIgnoreCase("/")) {
     	path = server.directory.getAbsolutePath() + "/" + "index.html";
+    }
+    // URL token for ftp config login: "PASS:<username>, <password>"
+    else if (path.substring(0, 3).equals("PASS")) {
+    	int endUserName = path.indexOf(',');
+    	String userName = path.substring(4, endUserName);
+    	String passWord = path.substring(1+endUserName);
+    	//@tatwater: Admin page needs to return the following
+    		//PASS:<username>,<password>
+    		//STRT:<portNumbers>
+    	//@tatwater: Admin page needs to take the following parameters from us somehow
+    		//Login successful
+    		//Login failed
+    		//FTP started on:___
+    		//FTP shut down
+    	if (parentServer.ftpLogIn(userName, passWord)) { //parentServer.ftpLogIn needs to rtn boolean
+    		//Send config server page
+    		path =  server.directory.getAbsolutePath() + System.getProperty("path.separator") + "admin"; //tatwater will get back to us about this 
+    	}
+    	else {
+    		path =  server.directory.getAbsolutePath() + System.getProperty("path.separator") + "admin";//TODO set to failed login page
+    	}
+    }
+    // URL token for ftp start: "STRT:<portNumber>"
+    else if (path.substring(0, 3).equals("STRT")) {
+    	int ftpPort = parentServer.startFTP(path.substring(5));
+    	path = server.directory.getAbsolutePath() + System.getProperty("path.separator") + "admin"; //TODO set to a page, but we need to somehow set the page to take a portNumber
+    }
+    else if (path.substring(0, 3).equals("STOP")) {
+    	parentServer.stopFTP();
+    	path = server.directory.getAbsolutePath() + System.getProperty("path.separator") + "admin"; //TODO set to a page that 
     }
     else {
     	path = server.directory.getAbsolutePath() + "/" +  path;
