@@ -14,11 +14,15 @@ import java.util.Scanner;
 import EarlGray2.*;
 import jhttp2.*;
 
-//TODO add Post to jhttp, make it parse the body for FTP server commands
-//TODO add FTP server commands. 
-//TODO hardcode directory for HTTP server
+//TODO Add Post to JHTTP, make it parses the body for FTP server commands
+//TODO Add FTP server commands.
 //TODO Make change port function and start FTP server
 
+//TODO Listen to HTTPServer admin page GET and call FTP methods
+//TODO Create sub methods for handling FTP configuration commands:
+	//TODO Check login credentials for FTP user
+	//TODO If logged in, allow start of FTP on port, return port number
+	//TODO If logged in, allow quit of FTP, return status
 
 /*
  * Authors: Tony Knapp, Teagan Atwater, Jake Junda
@@ -27,8 +31,8 @@ import jhttp2.*;
  * Description: This HTTP/FTP server serves files via both protocols to different clients
  */
 public class Server extends Thread {
-	static HTTPServer httpServer;
-	static EarlGray ftpServer;
+	private static HTTPServer httpServer;
+	private static EarlGray ftpServer;
 
 	/**
 	 * Create new instance of Server
@@ -36,28 +40,18 @@ public class Server extends Thread {
 	 * @author Teagan Atwater
 	 * @since Alpha
 	 */
-	public Server() throws IOException {
-		int httpPort = 0;
-		String directoryPath = "";		
+	public Server(String dirPath, int port) throws IOException {
+		String directoryPath = dirPath;
+		int httpPort = port;
 		System.out.print("Initializing HTTP... ");
-		this.httpServer = new HTTPServer(httpPort, directoryPath);
+		Server.httpServer = new HTTPServer(httpPort, directoryPath);
 		System.out.println("HTTP initialized.");
-		this.httpServer.start();
-		System.out.print("HTTP started.\nInitializing FTP... ");
-		this.ftpServer = new EarlGray(directoryPath);
-		System.out.println("FTP initialized.\nTo start FTP, use web service: 'localhost/admin/'.");
+		Server.httpServer.start();
+		System.out.println("HTTP started.");
+//		System.out.print("HTTP started.\nInitializing FTP... ");
+//		this.ftpServer = new EarlGray(directoryPath);
+//		System.out.println("FTP initialized.\nTo start FTP, use web service: 'localhost/admin/'.");
 	}
-	
-	//TODO create a server initializer, starts http and intializes ftp.
-	
-	//TODO create a server run function, maintains http and ftp servers. Looks for FTP server start and stop commands and  sub methods executes.
-	
-	//TODO Create sub methods for handeling FTP configuration commands:
-		//TODO Check login creditionals for FTP user
-		//TODO if Logged in, allow start of FTP on port, return port number
-		//TODO if Logged in, allow quit of FTP, return status
-	
-	//TODO create a quit server function.
 
 	/**
 	 * Intiate the server
@@ -69,10 +63,41 @@ public class Server extends Thread {
 		Scanner in = new Scanner(System.in);
 		String text;
 		System.out.println("Starting server...");
-		Server server = new Server();
+		boolean validDir = false;
+		String directoryPath = "";
+		while(!validDir) {
+			System.out.println("Please provide the absolute path to the server root directory:");
+			directoryPath = in.nextLine();
+			if (directoryPath.startsWith("/") || directoryPath.startsWith("C://")) {
+				validDir = true;
+			}
+			else {
+				System.out.println("Error: Must be an absolute path.");
+			}
+			// TODO: Probably should have other checks, like attempting to follow path to make sure it exists or something
+		}
+		System.out.println("Path accepted.");
+		boolean validPort = false;
+		int httpPort = 0;
+		while(!validPort) {
+			System.out.println("Please provide the HTTP port number or press enter to use default (80):");
+			String tempPort = in.nextLine();
+			if (tempPort.matches("^([-+] ?)?[0-9]+(,[0-9]+)?$")) {
+				if (Integer.parseInt(tempPort) <= 65535) {
+					validPort = true;
+					httpPort = Integer.parseInt(tempPort);
+				}
+				else {
+					System.out.println("Error: Must be between 0 and 65535.");
+				}
+			}
+		}
+		System.out.println("Port accepted.\nInitializing server...");
+		Server server = new Server(directoryPath, httpPort);
+		System.out.println("Server initialized and running.");
 		text = in.nextLine();
 		while (text != null && !text.trim().equalsIgnoreCase("QUIT")) {
-			// Do something useful aka run
+			// Do something useful / run
 			text = in.nextLine();
 		}
 		while (!ftpServer.stopServer());
