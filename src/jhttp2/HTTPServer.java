@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 //TODO add parent webftp server as attribute
-	//TODO all parent to close 	//TODO allow parent to close jhttp server
+	//TODO allow parent to close jhttp server
 	//TODO allow parent jhttp to communicate to parent
 	//TODO allow parent to tell jhttp server that login of FTP user is good
 
@@ -96,7 +96,7 @@ public class HTTPServer extends Thread {
 					}
 					else {
 						System.out.println("Bad directory argument. Must be an absolute path.");
-						System.exit(2);
+//						System.exit(2);
 					}
 				}
 			}
@@ -115,7 +115,7 @@ public class HTTPServer extends Thread {
 		}
 		while (!server.stopServer()); // Wait for the server to shut down before proceeding
 		in.close();
-		System.exit(0); // Shut down the JVM
+//		System.exit(0); // Shut down the JVM
 	}
 	
 	/**
@@ -148,16 +148,6 @@ public class HTTPServer extends Thread {
 		}
 	}
 	
-	/**
-	 * Get function
-	 *
-	 * @author Jake Junda
-	 * @since Alpha
-	 */
-	public void get() {
-		System.out.println("Get function called");
-
-	}
 	
 	/**
 	 * Closes down all user sessions and stops the server

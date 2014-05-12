@@ -104,7 +104,12 @@ public class HTTPClient extends Thread {
     	}
     }
     if (path.equalsIgnoreCase("/")) {
-    	path = server.directory.getAbsolutePath() + "/" + "index.html";
+    	path = server.directory.getAbsolutePath() + "/" + "index.html"+;
+    }
+    else if (path.substring(0, 3).equals("PASS")) {
+    	String userName = 
+    	String passWord =
+    	if (parent)
     }
     else {
     	path = server.directory.getAbsolutePath() + "/" +  path;
