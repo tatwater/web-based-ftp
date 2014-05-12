@@ -8,7 +8,6 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 	//TODO allow parent jhttp to communicate to parent
 	//TODO allow parent to tell jhttp server that login of FTP user is good
@@ -60,65 +59,6 @@ public class HTTPServer extends Thread {
 			e.printStackTrace();
 		}
 	}
-
-	/**
-	 * Intiate the server and handle client communications. Before exiting,
-	 * close the server and the JTM.
-	 * 
-	 * @author Tony Knapp
-	 * @author Jake Junda
-	 * @since Alpha
-	 */
-	/*
-	public static void main(String[] args) throws Exception {
-		boolean portProvided = false;
-		int tempPort = 80;
-//		String tempDir = "C://"; //Windows
-		String tempDir = "/"; //Linux
-		Scanner in = new Scanner(System.in);
-		String text;
-		if (args.length > 0) {
-			for (int i = 0; i < args.length; i++) {
-				if (args[i].trim().equals("-p")) {
-					if (args[i+1].matches("^([-+] ?)?[0-9]+(,[0-9]+)?$")) {
-						if (Integer.parseInt(args[i+1]) <= 65535) {
-							portProvided = true;
-							tempPort = Integer.parseInt(args[i+1]);
-						}
-						else {
-							System.out.println("Bad port argument. Must be between 0 and 65535.");
-							System.exit(2);
-						}
-					}
-				}
-				else if (args[i].trim().equals("-d")) {
-					if (args[i + 1].startsWith("/") || args[i + 1].startsWith("C://")) {
-						tempDir = args[i + 1];
-					}
-					else {
-						System.out.println("Bad directory argument. Must be an absolute path.");
-//						System.exit(2);
-					}
-				}
-			}
-		}
-		if (!portProvided) {
-			System.out.println("Missing port argument. Defaulting to port 80.");
-		}
-		HTTPServer server = new HTTPServer(tempPort, tempDir); // Create server
-		server.start();
-		text = in.nextLine(); // Wait for user input
-		while (text != null && !text.trim().equalsIgnoreCase("QUIT")) { // Loop until the user types QUIT
-			if (text.trim().equalsIgnoreCase("PORT")) {
-				System.out.println("The port number you should connect to is " + HTTPServer.PORT);
-			}
-			text = in.nextLine(); // Wait for user input
-		}
-		while (!server.stopServer()); // Wait for the server to shut down before proceeding
-		in.close();
-//		System.exit(0); // Shut down the JVM
-	}
-	*/
 	
 	/**
 	 * Wait for clients to connect to the server, then creates a socket and
@@ -129,7 +69,7 @@ public class HTTPServer extends Thread {
 	 * @since Alpha
 	 */
 	public void run() {
-		System.out.println("Server started on port " + PORT + ".\nType \"QUIT\" to exit. \nType \"PORT\" to print the port.");
+//		System.out.println("Server started on port " + PORT + ".\nType \"QUIT\" to exit. \nType \"PORT\" to print the port.");
 		this.running = true;
 		try {
 			while (running) {
@@ -164,7 +104,7 @@ public class HTTPServer extends Thread {
 			while (!client.shutThingsDown(0)); // Wait for the client to shut down before proceeding
 		}
 		out.close();
-		System.out.println("All client sessions have been shut down. Stopping server.");
+//		System.out.println("All client sessions have been shut down. Stopping server.");
 		try {
 			this.join(100); // Let the thread die -> xp 
 		}

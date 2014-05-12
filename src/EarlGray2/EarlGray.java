@@ -9,7 +9,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
-import webftp.*;
 
 /*Authors: Tony Knapp, Teagan Atwater, Jake Junda
 //Started on: April  3, 2014
@@ -66,20 +65,24 @@ public class EarlGray extends Thread {
 	 * @since Alpha (04/03/14)
 	 * @exception IOException
 	 */
-	public EarlGray(String directoryPath, int port, webftp.Server parentServer) throws IOException {
+	public EarlGray(String directoryPath, webftp.Server parentServer) throws IOException {
 		this.clientInstList = new ArrayList<EGClientInst>();
 		this.directory=new File(directoryPath);
 		this.parentServer = parentServer;
 		if(!this.directory.isDirectory()) {
 			this.directory.mkdir();
 		}
+	}
+	
+	public void startFTP(int portNumber) {
 		try {
 			this.out = new PrintWriter(new BufferedWriter(new FileWriter(inFile, true)));
-			this.incoming = new ServerSocket(port); // create server socket on designated port
+			this.incoming = new ServerSocket(portNumber); // create server socket on designated port
 			CNT_FTP_PORT = incoming.getLocalPort();
 		} catch (IOException e) {
 			e.printStackTrace();                  // print error stack
 		}
+		this.start();
 	}
 	
 	/**
@@ -154,7 +157,7 @@ public class EarlGray extends Thread {
 	 * @return true
 	 * @since Alpha (04/21/2014)
 	 */
-	boolean logTransfer(String handle, Date date, String command) {
+	public boolean logTransfer(String handle, Date date, String command) {
 		out.print(handle + "\t" + date + "\t" + command +"\n");
 		return true;
 	}
@@ -188,7 +191,7 @@ public class EarlGray extends Thread {
 			while (!client.shutThingsDown(1)); // wait for the client to shut down before proceeding
 		}
 		out.close();
-		System.out.println("All client sessions have been terminated.\nStopping server.");
+//		System.out.println("All client sessions have been terminated.\nStopping server.");
 		try {
 			this.join(100);                    // let the thread die
 		} catch (InterruptedException e) {
@@ -206,109 +209,8 @@ public class EarlGray extends Thread {
 	 * @return int
 	 * @since Alpha(4/23/2014)
 	 */
-	public static int getPortNum(){
+	public int getPortNum(){
 			return CNT_FTP_PORT;
 	}
-	
-		/**
-		 * The main function intiates the server
-		 * and handles the server user's input.
-		 * The main function will close the server, and then
-		 * JVM before exiting.
-		 * 
-		 * @author Tony Knapp
-		 * @author Jake Junda
-		 * @param
-		 * @since Alpha
-		 * @throws Exception
-		 */
-//		public static void main(String[] args) throws Exception {
-//			boolean portFlag = false;
-//			int portNumber = 20;
-//			boolean directoryFlag = false;
-//			String directoryName = "/Users/" + System.getProperty("user.name") + "/Desktop/Share";
-//			Scanner in = new Scanner(System.in);                               // initialize scanner
-//			String text;                                 // read user input 
-//			if (args.length > 0) {
-//				for (int i = 0; i < args.length; i++) {
-//					if (args[i].trim().equals("-p")){
-//						if (args[i+1].matches("^([-+] ?)?[0-9]+(,[0-9]+)?$")){
-//							if (Integer.parseInt(args[i+1]) <= 65535) {
-//								portFlag = true;
-//								portNumber = Integer.parseInt(args[i+1]);
-//								i = i + 2;
-//							}
-//							else{
-////								System.out.println("Bad port argument. Must be less than 65535.");
-////								System.exit(2);
-//							}						
-//						}
-//					}
-//					else if (args[i].trim().equals("-d")){
-//						if (args[i + 1].startsWith("/") || args[i + 1].startsWith("C://")) {
-//							directoryFlag = true;
-//							directoryName = args[i + 1];
-//						}
-//						else {
-////							System.out.println("Bad directory argument. Must be an absolute path");
-////							System.exit(2);
-//						}
-//					}
-//				}
-//			}
-//			try {
-//				if (portFlag == false) {
-////					System.out.println("Missing port argument.\n"
-////							+ "Default is 20, return nothing for default.\n"
-////							+ "Or Return 0 for to have a port automically assigned.\n"
-////							+ "What port would like the control on?");
-//					text = in.nextLine();
-//					if (text.isEmpty()) {
-//						portFlag = true;
-//						portNumber = 20;
-//					}				
-//					if (Integer.parseInt(text) <= 65535) {
-//						portFlag = true;
-//						portNumber = Integer.parseInt(text);
-//					}
-//				}
-//			}
-//			catch (NumberFormatException e) {
-////				System.out.println("Expected an integer between 0 and 65535");
-////				System.exit(2);
-//			}
-//			if (directoryFlag == false){
-////				System.out.println("Missing directory argument!\n"
-////						+ "The default folder is ~/Desktop/Share. Return nothing for default.\n"
-////						+ "Please provide the absolute path to the directory "
-////						+ "you would like to share:");
-//				text = in.nextLine();
-//				if (text.startsWith("/") || text.startsWith("C://")) {
-//					directoryFlag = true;
-//					directoryName = text;
-//				}
-//				else if (text.isEmpty()) {
-//					directoryFlag = true;
-//				}
-//				else {
-////					System.out.println("Bad directory argument. Must be an absolute path");
-////					System.exit(2);
-//				}
-//			}
-//			if (directoryFlag == true && portFlag == true) {
-//				EarlGray server = new EarlGray(portNumber, directoryName);           // creates an instance server class
-//				server.start();                                                    // starts the server 
-//				text = in.nextLine();      
-//				while (text != null && !text.trim().equalsIgnoreCase("quit")) { // if the server user does NOT quit
-//					if (text.trim().equalsIgnoreCase("port")) {
-//							int pNum = getPortNum();
-////							System.out.println("The port number you should connect to is "+pNum);
-//					}
-//					text = in.nextLine();                                          // let the server user type again
-//				}                                                                  // else begin closing things
-//				while (!server.stopServer());                                      // wait for the server.stopServer() to return true
-//				in.close();      // close the Scanner
-//			}                                                  
-//			System.exit(0);                                                    // shutdown the JVM
-//		}                                                                    
+	                                                                 
 	}
