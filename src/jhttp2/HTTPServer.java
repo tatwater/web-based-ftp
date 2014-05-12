@@ -88,6 +88,10 @@ public class HTTPServer extends Thread {
 		}
 	}
 	
+	public int getPort() {
+		return PORT;
+	}
+	
 	
 	/**
 	 * Closes down all user sessions and stops the server

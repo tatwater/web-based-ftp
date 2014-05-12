@@ -88,6 +88,34 @@ public class Server extends Thread {
 		System.out.println("Starting server...");
 		boolean validDir = false;
 		String directoryPath = "";
+		boolean validPort = false;
+		int httpPort = 0;
+		if (args.length > 0) {
+			for (int i = 0; i < args.length; i++) {
+				if (args[i].trim().equals("-p")) {
+					if (args[i+1].matches("^([-+] ?)?[0-9]+(,[0-9]+)?$")) {
+						if (Integer.parseInt(args[i+1]) <= 65535) {
+							validPort = true;
+							httpPort = Integer.parseInt(args[i+1]);
+						}
+						else {
+							System.out.println("Bad port argument. Must be between 0 and 65535.");
+							System.exit(2);
+						}
+					}
+				}
+				else if (args[i].trim().equals("-d")) {
+					if (args[i + 1].startsWith("/") || args[i + 1].startsWith("C://")) {
+						directoryPath = args[i + 1];
+						validDir = true;
+					}
+					else {
+						System.out.println("Bad directory argument. Must be an absolute path.");
+						System.exit(2);
+					}
+				}
+			}
+		}
 		while(!validDir) {
 			System.out.println("Please provide the absolute path to the server root directory:");
 			directoryPath = in.nextLine();
@@ -100,8 +128,6 @@ public class Server extends Thread {
 			// TODO: Probably should have other checks, like attempting to follow path to make sure it exists or something
 		}
 		System.out.println("Path accepted.");
-		boolean validPort = false;
-		int httpPort = 0;
 		while(!validPort) {
 			System.out.println("Please provide the HTTP port number or press enter to use default (80):");
 			String tempPort = in.nextLine();
@@ -118,6 +144,7 @@ public class Server extends Thread {
 		System.out.println("Port accepted.\nInitializing server...");
 		Server server = new Server(directoryPath, httpPort);
 		System.out.println("Server initialized and running.");
+		System.out.println("HTTP up on : " + server.httpServer.getPort() + ".");
 		text = in.nextLine();
 		while (text != null && !text.trim().equalsIgnoreCase("QUIT")) {
 			// Do something useful / run
