@@ -44,8 +44,8 @@ public class Server extends Thread {
 		System.out.println("HTTP initialized.");
 		this.httpServer.start();
 		System.out.print("HTTP started.\nInitializing FTP... ");
-		this.ftpServer = new EarlGray(directoryPath);//TODO modify so that this passes a port and a self
-		System.out.println("FTP initialized.\nTo start FTP, use web service: 'localhost/admin/'.");
+		//this.ftpServer = new EarlGray(directoryPath, httpPort, null);//TODO modify so that this passes a port and a self
+		//System.out.println("FTP initialized.\nTo start FTP, use web service: 'localhost/admin/'.");
 	}
 	
 	//TODO create a server initializer, starts http and intializes ftp.
@@ -57,8 +57,6 @@ public class Server extends Thread {
 		//TODO if Logged in, allow start of FTP on port, return port number
 		//TODO if Logged in, allow quit of FTP, return status
 	
-	//TODO create a quit server function.
-
 	/**
 	 * Intiate the server
 	 * 
