@@ -116,7 +116,9 @@ public class HTTPClient extends Thread {
     	 if (path.startsWith("PASS")) {
 	    	int endUserName = path.indexOf(',');
 	    	String userName = path.substring(5, endUserName);
+	    	System.out.println(userName);
 	    	String passWord = path.substring(1+endUserName, path.indexOf('&'));
+	    	System.out.println(passWord);
 	    		//PASS:<username>,<password>
 	    		//STRT:<portNumbers>
 	    	if (parentServer.ftpLogIn(userName, passWord)) { //parentServer.ftpLogIn needs to rtn boolean
