@@ -1,42 +1,4 @@
 <!doctype html>
-<!--<?php
-  // session_start();
-  // $_SESSION['username'] = "";
-
-  // $userinfo = array(
-  //   'admin'=>'password');
-  // $server_running = false;
-  // $port = "0000";
-  // $bad_username = false;
-  // $bad_password = false;
-  // $bad_port = false;
-  // $print_run = false;
-  // $print_off = false;
-
-  // // Grabs server status
-  // if(isset($_POST['running'])) {
-  //   if($_POST['running'] == "t") {
-  //     $server_running = true;
-  //   }
-  //   else if($_POST['running'] == "f") {
-  //     $server_running = false;
-  //   }
-  // }
-
-  // // Takes in a port number; if 0000 starts server, otherwise stops server
-  // if(isset($_POST['port'])) {
-  //   if($server_running == false) {
-  //     $server_running = true;
-  //     $port = $_POST['port'];
-  //     $print_run = true;
-  //   }
-  //   else {
-  //     $server_running = false;
-  //     $port = "0000";
-  //     $print_off = true;
-  //   }
-  // }
-?>-->
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -44,31 +6,46 @@
     <meta name="viewport" content="initial-scale=1.0, width=device-width" />
     <link href="reset.css" rel="stylesheet" />
     <link href="style.css" rel="stylesheet" />
-    <link href="fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
     <title>FTP Control Panel</title>
     <script>
+      var port = 00000; //469
+      var server_running = false; //503
+      // Look at how secure we are! Plz dnt hax us!
+      var okUser = "admin";
+      var okPassword = "password";
+
+      function formSubmit(username, password, portNum) {
+        var url = "index.html?PASS=" + username + "," + password;
+        if (!portNum == 0) {
+          url = url + "&STRT=" + portNum;
+        }
+        console.log(url);
+        var xmlHttp = null;
+
+        xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", url, false);
+        xmlHttp.send(null);
+        return xmlHttp.responseText;
+      }
+
       // Make sure all login fields are filled in before submitting
       function checkFilledLogin() {
         var u = document.forms["login"]["username"].value;
         var p = document.forms["login"]["password"].value;
-        var o = document.forms["controls"]["port"].value;
-        var r = document.forms["controls"]["running"].value;
+        var o = document.forms["login"]["port"].value;
 
         if(u == null || u == "") {
           document.getElementById('error').innerHTML = "Please enter a username.";
-          return false;
         }
         else if(p == null || p == "") {
           document.getElementById('error').innerHTML = "Please enter a password.";
-          return false;
         }
         else if(o == null || o == "") {
           document.getElementById('error').innerHTML = "Please enter a port number.";
-          return false;
         }
         else {
-          return true;
+          var response = formSubmit(u, p, o);
         }
       }
 
@@ -107,25 +84,27 @@
     <section>
       <h1>FTP Control Panel</h1>
       <p>To change the FTP server, enter your administrative credentials.</p>
-      <form name="login" method="post" action="index.php" onsubmit="return checkFilledLogin()">
+      <form name="login">
         <div class="half">
-          <!-- <input name="username" type="text" <?php if(!$_SESSION['username']) { echo "autofocus='autofocus'"; } ?> placeholder="Username" /> -->
           <input name="username" type="text" placeholder="Username" />
         </div>
         <div class="spacer"></div>
         <div class="half">
           <input name="password" type="password" placeholder="Password" />
         </div>
-        <!-- <input name="running" type="text" class="hide" value="<?php if($server_running) { echo "t"; } else { echo "f"; } ?>" /> -->
-        <!-- <input name="port" type="number" min="1" max="25565" <?php if($server_running) { echo "class='hide' value='$port'"; } else { echo "autofocus='autofocus' placeholder='Port Number'"; } ?> /> -->
-        <input name="port" type="number" min="1" max="25565" />
-<!--<?php
-    // if($server_running && $port) {
-    //   echo "  <input name='portcover' type='text' placeholder='Port Number: $port' disabled />";
-    // }
-?>-->
-        <br />
-        <input type="submit"  /> <!-- value="<?php if(!$server_running) { echo "Start Server"; } else { echo "Stop Server"; } ?>" -->
+        <script>
+          if (server_running) {
+            document.write("<input class='hide' name='port' type='number' min='1' max='25565' placeholder='Port Number' />");
+            document.write("<input name='portcover' type='text' placeholder='Port Number: " + port + "' disabled />");
+            document.write("<br />");
+            document.write("<input type='button' value='Stop Server' onclick='checkFilledLogin()' />");
+          }
+          else {
+            document.write("<input name='port' type='number' min='1' max='25565' placeholder='Port Number' />");
+            document.write("<br />");
+            document.write("<input type='button' value='Start Server' onclick='checkFilledLogin()' />");
+          }
+        </script>
         <br />
         <p id="error"></p>
       </form>
