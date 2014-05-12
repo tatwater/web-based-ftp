@@ -10,7 +10,7 @@
     <title>FTP Control Panel</title>
     <script>
       var port = 00000; //469
-      var server_running = true; //503
+      var server_running = false; //503
       // Look at how secure we are! Plz dnt hax us!
       var okUser = "admin";
       var okPassword = "password";
@@ -25,13 +25,13 @@
           document.getElementById('error').innerHTML = "Please enter a username.";
         }
         else if (u != okUser) {
-          badUsername();
+          document.getElementById('error').innerHTML = "The username you entered was incorrect.";
         }
         else if(p == null || p == "") {
           document.getElementById('error').innerHTML = "Please enter a password.";
         }
         else if (p != okPassword) {
-          badPassword();
+          document.getElementById('error').innerHTML = "The password you entered was incorrect.";
         }
         else if(newStatus == true && (o == null || o == "")) {
           document.getElementById('error').innerHTML = "Please enter a port number.";
@@ -57,16 +57,6 @@
         xmlHttp.send(null);
         return xmlHttp.responseText;
       }
-
-      // Called onload if incorrect username
-      function badUsername() {
-        document.getElementById('error').innerHTML = "The username you entered was incorrect.";
-      }
-
-      // Called onload if incorrect password
-      function badPassword() {
-        document.getElementById('error').innerHTML = "The password you entered was incorrect.";
-      }
     </script>
   </head>
   <body>
@@ -89,7 +79,7 @@
             document.write("<input type='button' value='Stop Server' onclick='submitForm(false)' />");
           }
           else {
-            document.write("<input name='port' type='number' min='1' max='25565' placeholder='Port Number' />");
+            document.write("<input name='port' type='number' min='0' max='25565' placeholder='Port Number' />");
             document.write("<br />");
             document.write("<input type='button' value='Start Server' onclick='submitForm(true)' />");
           }
