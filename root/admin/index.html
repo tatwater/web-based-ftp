@@ -10,15 +10,44 @@
     <title>FTP Control Panel</title>
     <script>
       var port = 00000; //469
-      var server_running = false; //503
+      var server_running = true; //503
       // Look at how secure we are! Plz dnt hax us!
       var okUser = "admin";
       var okPassword = "password";
 
-      function formSubmit(username, password, portNum) {
+      // Make sure all login fields are filled in before submitting
+      function submitForm(newStatus) {
+        var u = document.forms["login"]["username"].value;
+        var p = document.forms["login"]["password"].value;
+        var o = document.forms["login"]["port"].value;
+
+        if(u == null || u == "") {
+          document.getElementById('error').innerHTML = "Please enter a username.";
+        }
+        else if (u != okUser) {
+          badUsername();
+        }
+        else if(p == null || p == "") {
+          document.getElementById('error').innerHTML = "Please enter a password.";
+        }
+        else if (p != okPassword) {
+          badPassword();
+        }
+        else if(newStatus == true && (o == null || o == "")) {
+          document.getElementById('error').innerHTML = "Please enter a port number.";
+        }
+        else {
+          var response = formSubmit(u, p, o, newStatus);
+        }
+      }
+
+      function formSubmit(username, password, portNum, newStatus) {
         var url = "index.html?PASS=" + username + "," + password;
-        if (!portNum == 0) {
+        if (newStatus == true) {
           url = url + "&STRT=" + portNum;
+        }
+        else {
+          url = url + "&STOP";
         }
         console.log(url);
         var xmlHttp = null;
@@ -27,26 +56,6 @@
         xmlHttp.open("GET", url, false);
         xmlHttp.send(null);
         return xmlHttp.responseText;
-      }
-
-      // Make sure all login fields are filled in before submitting
-      function checkFilledLogin() {
-        var u = document.forms["login"]["username"].value;
-        var p = document.forms["login"]["password"].value;
-        var o = document.forms["login"]["port"].value;
-
-        if(u == null || u == "") {
-          document.getElementById('error').innerHTML = "Please enter a username.";
-        }
-        else if(p == null || p == "") {
-          document.getElementById('error').innerHTML = "Please enter a password.";
-        }
-        else if(o == null || o == "") {
-          document.getElementById('error').innerHTML = "Please enter a port number.";
-        }
-        else {
-          var response = formSubmit(u, p, o);
-        }
       }
 
       // Called onload if incorrect username
@@ -58,28 +67,8 @@
       function badPassword() {
         document.getElementById('error').innerHTML = "The password you entered was incorrect.";
       }
-
-      // Called onload if invalid port number
-      function badPort() {
-        document.getElementById('error').innerHTML = "Please enter a valid port number.";
-      }
-
-      function printRun() {
-        console.log("running");
-        setTimeout(function() {
-          console.log("end");
-        }, 1000);
-      }
-
-      function printOff() {
-        console.log("offline");
-        setTimeout(function() {
-          console.log("end");
-        }, 1000);
-      }
     </script>
   </head>
-  <!-- <body <?php if($bad_username) { echo "onload='badUsername();'"; } else if($bad_password) { echo "onload='badPassword();'"; } else if($print_run) { echo "onload='printRun();'"; } else if($print_off) { echo "onload='printOff();'"; } ?>> -->
   <body>
     <section>
       <h1>FTP Control Panel</h1>
@@ -97,12 +86,12 @@
             document.write("<input class='hide' name='port' type='number' min='1' max='25565' placeholder='Port Number' />");
             document.write("<input name='portcover' type='text' placeholder='Port Number: " + port + "' disabled />");
             document.write("<br />");
-            document.write("<input type='button' value='Stop Server' onclick='checkFilledLogin()' />");
+            document.write("<input type='button' value='Stop Server' onclick='submitForm(false)' />");
           }
           else {
             document.write("<input name='port' type='number' min='1' max='25565' placeholder='Port Number' />");
             document.write("<br />");
-            document.write("<input type='button' value='Start Server' onclick='checkFilledLogin()' />");
+            document.write("<input type='button' value='Start Server' onclick='submitForm(true)' />");
           }
         </script>
         <br />
