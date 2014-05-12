@@ -213,8 +213,17 @@ public class EarlGray extends Thread {
 	 * @return int
 	 * @since Alpha(4/23/2014)
 	 */
-	public int getPortNum(){
-			return CNT_FTP_PORT;
+	public String getPortNum(){
+		String rtn = Integer.toString(CNT_FTP_PORT);
+		if (rtn.length() < 5) {
+			int difference = 5 - rtn.length();
+			for (int i = 0; i < difference; i++ ){
+				rtn = "0" + rtn;
+			}
+			return rtn;
+		}
+			
+			return Integer.toString(CNT_FTP_PORT);
 	}
 	                                                                 
-	}
+}

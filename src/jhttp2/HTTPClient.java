@@ -33,6 +33,11 @@ public class HTTPClient extends Thread {
 	int requestNum;
 	ArrayList<String> input = new ArrayList<String>();
 	private webftp.Server parentServer;
+	private boolean writingPortNum = false;
+	private String portNumtoWrite = "00000";
+	private boolean writingLogIn = false;
+	private boolean logInStatus = false;
+	
 
 	
 	/**
@@ -122,19 +127,33 @@ public class HTTPClient extends Thread {
     		//FTP shut down
     	if (parentServer.ftpLogIn(userName, passWord)) { //parentServer.ftpLogIn needs to rtn boolean
     		//Send config server page
+    		this.writingPortNum = true;
+    		this.writingLogIn = true; 
+    		this.logInStatus = true;
+    		this.portNumtoWrite = "00000";
     		path =  server.directory.getAbsolutePath() + System.getProperty("path.separator") + "admin"; //tatwater will get back to us about this 
     	}
     	else {
+    		this.writingPortNum = true;
+    		this.writingLogIn = true;
+    		this.logInStatus = false;
+
     		path =  server.directory.getAbsolutePath() + System.getProperty("path.separator") + "admin";//TODO set to failed login page
     	}
     }
     // URL token for ftp start: "STRT:<portNumber>"
     else if (path.substring(0, 3).equals("STRT")) {
-    	int ftpPort = parentServer.startFTP(Integer.parseInt(path.substring(5)));
+    	this.portNumtoWrite = parentServer.startFTP(Integer.parseInt(path.substring(5)));
+  		this.writingPortNum = true;
+  		this.writingLogIn = true; 
+  		this.logInStatus = true;
     	path = server.directory.getAbsolutePath() + System.getProperty("path.separator") + "admin"; //TODO set to a page, but we need to somehow set the page to take a portNumber
     }
     else if (path.substring(0, 3).equals("STOP")) {
-    	boolean ftpState = parentServer.stopFTP();
+  		this.writingPortNum = true;
+  		this.writingLogIn = true; 
+  		this.portNumtoWrite = "00000";
+  		this.logInStatus = parentServer.stopFTP();
     	path = server.directory.getAbsolutePath() + System.getProperty("path.separator") + "admin"; //TODO set to a page that 
     }
     else {
@@ -161,7 +180,33 @@ public class HTTPClient extends Thread {
 	  	controlOut.writeBytes(construct_http_header(200, type_is));
 	  	FileInputStream requestedFile = new FileInputStream(sendFile);
 	    int b = requestedFile.read();
+	    int counter = 0;
 	    while (b != -1) {
+	    	counter++;
+	    	if (counter == 469 && writingPortNum) {
+	    		for (int i = 0 ; i < this.portNumtoWrite.length(); i++){
+	    			b = (byte) this.portNumtoWrite.charAt(i);
+	    			controlOut.write(b);
+	    		}
+	    		writingPortNum = false;
+	    	}
+	    	if (counter == 503 && this.writingLogIn){
+	    		if (this.logInStatus){
+	    			String toWrite = "True";
+	    			for (int i = 0 ; i < toWrite.length(); i++){
+		    			b = (byte) toWrite.charAt(i);
+		    			controlOut.write(b);
+		    		}
+	    		}
+    			else {
+		    			String toWrite = "False";
+		    			for (int i = 0 ; i < toWrite.length(); i++){
+			    			b = (byte) toWrite.charAt(i);
+			    			controlOut.write(b);
+			    		}
+    			}
+    			writingLogIn = false;	    			
+	    	}
 	      controlOut.write(b);
 	      b = requestedFile.read();
       }

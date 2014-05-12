@@ -52,14 +52,14 @@ public class Server extends Thread {
 		}
 	}
 	
-	public int startFTP(int portNumber) {
+	public String startFTP(int portNumber) {
 		if (this.ftpLogin) {
 			ftpServer.startFTP(portNumber);
 			ftpServer.logTransfer(this.ftpUser,  new Date(), ("Started FTP " + ftpServer.getPortNum() +"."));
 			return ftpServer.getPortNum();
 		}
 		else
-			return -1;
+			return "00000";
 	}
 	
 	public boolean stopFTP() throws IOException {
