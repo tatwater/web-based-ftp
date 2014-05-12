@@ -63,7 +63,7 @@ public class EGClientInst extends Thread {
 		this.kettle = server;
 		this.parentDir = parentFolder;
 		this.curDir = this.parentDir;
-		System.out.println("A new guest has Conncected\rAwaiting Username and Password");
+//		System.out.println("A new guest has Conncected\rAwaiting Username and Password");
 	}
 	
 	/**
@@ -83,7 +83,7 @@ public class EGClientInst extends Thread {
 			this.loginTime = new Date();
 			if (this.running) {
 				String text = controlIn.readLine(); // takes user input and logs it
-				System.out.println(text);
+//				System.out.println(text);
 				while (!text.trim().equalsIgnoreCase("QUIT")	&& this.running) {
 					if (!text.equals(null)) {
 						kettle.logTransfer(handle, new Date(), text);						
@@ -143,7 +143,7 @@ public class EGClientInst extends Thread {
 						controlOut.flush();
 					}
 					text = controlIn.readLine();
-					System.out.println(text);
+//					System.out.println(text);
 				}
 			}
 			if (this.running) {
@@ -384,7 +384,7 @@ public class EGClientInst extends Thread {
 		this.handle = input.replace("USER", "").trim();	
 		controlOut.writeChars("331 Username Logged, please provide password now via \"PASS <sp> <username>\"\n");
 		controlOut.flush();
-		System.out.println(this.handle + " has connected but not provided a password");
+//		System.out.println(this.handle + " has connected but not provided a password");
 	}
 	
 	/**
@@ -403,13 +403,13 @@ public class EGClientInst extends Thread {
 			while (!kettle.logLogIn(this.handle, this.loginTime, this.acceptence));
 			controlOut.writeChars("230 Password Accepted. User logged in at" + this.loginTime + "\n");
 			controlOut.flush();
-			System.out.println(this.handle + " has gained attmidentence " + this.loginTime);
+//			System.out.println(this.handle + " has gained attmidentence " + this.loginTime);
 			return;
 		}
 		else {
 			controlOut.writeChars("530 That is not the password\n");
 			controlOut.flush();
-			System.out.println(this.handle + " does not know the password!");
+//			System.out.println(this.handle + " does not know the password!");
 		}
 	}
 	
@@ -474,10 +474,10 @@ public class EGClientInst extends Thread {
 	private void quit() throws IOException {
 		if (kettle.terminateSession(this)) {
 			if (this.acceptence) {
-				System.out.println(this.handle + " has left the tea party.");
+//				System.out.println(this.handle + " has left the tea party.");
 			} 
 			else {
-				System.out.println(this.handle + " has been driven off.");
+//				System.out.println(this.handle + " has been driven off.");
 			}
 			shutThingsDown(0);
 		}

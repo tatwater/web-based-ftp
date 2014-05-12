@@ -53,7 +53,7 @@ public class HTTPClient extends Thread {
 		this.requestNum = count;
 		this.parentServer = parentServer;
 		
-		System.out.println(this.requestNum + "New Request");
+//		System.out.println(this.requestNum + "New Request");
 	}
 	
 	/**
@@ -132,11 +132,11 @@ public class HTTPClient extends Thread {
     }
     // URL token for ftp start: "STRT:<portNumber>"
     else if (path.substring(0, 3).equals("STRT")) {
-    	int ftpPort = parentServer.startFTP(path.substring(5));
+    	int ftpPort = parentServer.startFTP(Integer.parseInt(path.substring(5)));
     	path = server.directory.getAbsolutePath() + System.getProperty("path.separator") + "admin"; //TODO set to a page, but we need to somehow set the page to take a portNumber
     }
     else if (path.substring(0, 3).equals("STOP")) {
-    	parentServer.stopFTP();
+    	boolean ftpState = parentServer.stopFTP();
     	path = server.directory.getAbsolutePath() + System.getProperty("path.separator") + "admin"; //TODO set to a page that 
     }
     else {
@@ -283,5 +283,6 @@ public class HTTPClient extends Thread {
 //    System.out.println(this.requestNum + "OUT: "+ s);
     return s;//return the header
   }
+}
 
 

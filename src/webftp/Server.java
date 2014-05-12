@@ -1,28 +1,12 @@
 package webftp;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
-import EarlGray2.*;
-import jhttp2.*;
+import jhttp2.HTTPServer;
+import EarlGray2.EarlGray;
 
-//TODO Add Post to JHTTP, make it parses the body for FTP server commands
-//TODO Add FTP server commands.
-//TODO Make change port function and start FTP server
-
-//TODO Listen to HTTPServer admin page GET and call FTP methods
-//TODO Create sub methods for handling FTP configuration commands:
-	//TODO Check login credentials for FTP user
-	//TODO If logged in, allow start of FTP on port, return port number
-	//TODO If logged in, allow quit of FTP, return status
 
 /*
  * Authors: Tony Knapp, Teagan Atwater, Jake Junda
@@ -31,8 +15,10 @@ import jhttp2.*;
  * Description: This HTTP/FTP server serves files via both protocols to different clients
  */
 public class Server extends Thread {
-	private static HTTPServer httpServer;
-	private static EarlGray ftpServer;
+	private HTTPServer httpServer;
+	private EarlGray ftpServer;
+	private boolean ftpLogin = false;
+	private String ftpUser;
 
 	/**
 	 * Create new instance of Server
@@ -44,15 +30,52 @@ public class Server extends Thread {
 		String directoryPath = dirPath;
 		int httpPort = port;
 		System.out.print("Initializing HTTP... ");
-		Server.httpServer = new HTTPServer(httpPort, directoryPath, this);
+		this.httpServer = new HTTPServer(httpPort, directoryPath, this);
 		System.out.println("HTTP initialized.");
-		Server.httpServer.start();
+		this.httpServer.start();
 		System.out.println("HTTP started.");
 //		System.out.print("HTTP started.\nInitializing FTP... ");
-//		this.ftpServer = new EarlGray(directoryPath);
+		this.ftpServer = new EarlGray(directoryPath, this);
 //		System.out.println("FTP initialized.\nTo start FTP, use web service: 'localhost/admin/'.");
 	}
+	
+	public boolean ftpLogIn(String userName, String pass){
+		if (ftpServer.checkPassword(pass)) {
+			ftpServer.logLogIn(userName, new Date(), true);
+			this.ftpLogin = true;
+			return true;
+			}
+		else {
+			ftpServer.logLogIn(userName, new Date(), false);
+			this.ftpLogin = false;
+			return false;
+		}
+	}
+	
+	public int startFTP(int portNumber) {
+		if (this.ftpLogin) {
+			ftpServer.startFTP(portNumber);
+			ftpServer.logTransfer(this.ftpUser,  new Date(), ("Started FTP " + ftpServer.getPortNum() +"."));
+			return ftpServer.getPortNum();
+		}
+		else
+			return -1;
+	}
+	
+	public boolean stopFTP() throws IOException {
+		if (this.ftpLogin) {
+			ftpServer.stopServer();
+			return true;
+		}
+		else
+			return false;
+	}
 
+	boolean shutThingsDown() throws IOException {
+		while (!this.ftpServer.stopServer());
+		while (!this.httpServer.stopServer());
+		return true;
+	}
 	/**
 	 * Intiate the server
 	 * 
@@ -100,8 +123,7 @@ public class Server extends Thread {
 			// Do something useful / run
 			text = in.nextLine();
 		}
-		while (!ftpServer.stopServer());
-		while (!httpServer.stopServer());
+		while (!server.shutThingsDown());
 		in.close();
 		System.exit(0);
 	}
