@@ -69,6 +69,7 @@ public class EarlGray extends Thread {
 		this.clientInstList = new ArrayList<EGClientInst>();
 		this.directory=new File(directoryPath);
 		this.parentServer = parentServer;
+		this.out = new PrintWriter(new BufferedWriter(new FileWriter(inFile, true)));
 		if(!this.directory.isDirectory()) {
 			this.directory.mkdir();
 		}
@@ -76,7 +77,6 @@ public class EarlGray extends Thread {
 	
 	public void startFTP(int portNumber) {
 		try {
-			this.out = new PrintWriter(new BufferedWriter(new FileWriter(inFile, true)));
 			this.incoming = new ServerSocket(portNumber); // create server socket on designated port
 			CNT_FTP_PORT = incoming.getLocalPort();
 			this.running = true;

@@ -56,7 +56,7 @@ public class HTTPClient extends Thread {
 		this.requestNum = count;
 		this.parentServer = parentServer;
 		
-//		System.out.println(this.requestNum + "New Request");
+		System.out.println(this.requestNum + "New Request");
 	}
 	
 	/**
@@ -68,7 +68,7 @@ public class HTTPClient extends Thread {
 		try {
 	  	String tmp = controlIn.readLine();
 	  	while (!tmp.isEmpty()){
-//	  		System.out.println(this.requestNum + "IN: " + tmp);
+	  		System.out.println(this.requestNum + "IN: " + tmp);
 	  		this.input.add(tmp);	  		
 				tmp = controlIn.readLine();
   		}
@@ -109,52 +109,51 @@ public class HTTPClient extends Thread {
     		//HTTP version is not supported
     	}
     }
-    if (path.equalsIgnoreCase("/")) {
+  if (path.contains("?")) {
+    	path = path.substring(18);
+      System.out.println(path);
+    	// URL token for ftp config login: "PASS:<username>, <password>"
+    	 if (path.startsWith("PASS")) {
+	    	int endUserName = path.indexOf(',');
+	    	String userName = path.substring(5, endUserName);
+	    	String passWord = path.substring(1+endUserName, path.indexOf('&'));
+	    		//PASS:<username>,<password>
+	    		//STRT:<portNumbers>
+	    	if (parentServer.ftpLogIn(userName, passWord)) { //parentServer.ftpLogIn needs to rtn boolean
+	    		//Send config server page
+	    		this.writingPortNum = true;
+	    		this.writingLogIn = true; 
+	    		this.logInStatus = true;
+	    		this.portNumtoWrite = "00000";
+	    		path =  server.directory.getAbsolutePath() + System.getProperty("path.separator") + "admin/index.html"; //tatwater will get back to us about this 
+	    	}
+	    	else {
+	    		this.writingPortNum = true;
+	    		this.writingLogIn = true;
+	    		this.logInStatus = false;
+	
+	    		path =  server.directory.getAbsolutePath() + System.getProperty("path.separator") + "admin/index.html";//TODO set to failed login page
+	    	}
+	    }
+	    // URL token for ftp start: "STRT:<portNumber>"
+    	String nextCommand = path.substring(path.indexOf('&')+1);
+	    if (nextCommand.startsWith("STRT")) {
+	    	this.portNumtoWrite = parentServer.startFTP(Integer.parseInt(nextCommand.substring(5)));
+	  		this.writingPortNum = true;
+	  		this.writingLogIn = true; 
+	  		this.logInStatus = true;
+	    	path = server.directory.getAbsolutePath() + System.getProperty("path.separator") + "admin/index.html"; //TODO set to a page, but we need to somehow set the page to take a portNumber
+	    }
+	    if (path.substring(0, 3).equals("STOP")) {
+	  		this.writingPortNum = true;
+	  		this.writingLogIn = true; 
+	  		this.portNumtoWrite = "00000";
+	  		this.logInStatus = parentServer.stopFTP();
+	    	path = server.directory.getAbsolutePath() + System.getProperty("path.separator") + "admin/index.html"; //TODO set to a page that 
+	    }
+    }
+    else if (path.equalsIgnoreCase("/")) {
     	path = server.directory.getAbsolutePath() + "/" + "index.html";
-    }
-    // URL token for ftp config login: "PASS:<username>, <password>"
-    else if (path.substring(0, 3).equals("PASS")) {
-    	int endUserName = path.indexOf(',');
-    	String userName = path.substring(4, endUserName);
-    	String passWord = path.substring(1+endUserName);
-    	//@tatwater: Admin page needs to return the following
-    		//PASS:<username>,<password>
-    		//STRT:<portNumbers>
-    	//@tatwater: Admin page needs to take the following parameters from us somehow
-    		//Login successful
-    		//Login failed
-    		//FTP started on:___
-    		//FTP shut down
-    	if (parentServer.ftpLogIn(userName, passWord)) { //parentServer.ftpLogIn needs to rtn boolean
-    		//Send config server page
-    		this.writingPortNum = true;
-    		this.writingLogIn = true; 
-    		this.logInStatus = true;
-    		this.portNumtoWrite = "00000";
-    		path =  server.directory.getAbsolutePath() + System.getProperty("path.separator") + "admin"; //tatwater will get back to us about this 
-    	}
-    	else {
-    		this.writingPortNum = true;
-    		this.writingLogIn = true;
-    		this.logInStatus = false;
-
-    		path =  server.directory.getAbsolutePath() + System.getProperty("path.separator") + "admin";//TODO set to failed login page
-    	}
-    }
-    // URL token for ftp start: "STRT:<portNumber>"
-    else if (path.substring(0, 3).equals("STRT")) {
-    	this.portNumtoWrite = parentServer.startFTP(Integer.parseInt(path.substring(5)));
-  		this.writingPortNum = true;
-  		this.writingLogIn = true; 
-  		this.logInStatus = true;
-    	path = server.directory.getAbsolutePath() + System.getProperty("path.separator") + "admin"; //TODO set to a page, but we need to somehow set the page to take a portNumber
-    }
-    else if (path.substring(0, 3).equals("STOP")) {
-  		this.writingPortNum = true;
-  		this.writingLogIn = true; 
-  		this.portNumtoWrite = "00000";
-  		this.logInStatus = parentServer.stopFTP();
-    	path = server.directory.getAbsolutePath() + System.getProperty("path.separator") + "admin"; //TODO set to a page that 
     }
     else {
     	path = server.directory.getAbsolutePath() + "/" +  path;
@@ -323,7 +322,7 @@ public class HTTPClient extends Thread {
 
     s = s + "\r\n"; //this marks the end of the httpheader
     //and the start of the body
-//    System.out.println(this.requestNum + "OUT: "+ s);
+    System.out.println(this.requestNum + "OUT: "+ s);
     return s;//return the header
   }
 }
