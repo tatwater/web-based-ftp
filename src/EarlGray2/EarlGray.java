@@ -43,14 +43,14 @@ public class EarlGray extends Thread {
 	 * @version 1.0 (4/24/2014)
 	 * @since Alpha (4/03/2014)
 	 */
-	private static int CNT_FTP_PORT;               		// server port number
+	private static int CNT_FTP_PORT;               		// server port numbe
 	private ArrayList<EGClientInst> clientInstList; // store running sessions
 	private ServerSocket incoming;                  // socket that the server listens to
 	final private String password = "EarlGray";
 	private File inFile = new File("log.txt");
 	private File directory;
 	private PrintWriter out;
-	public boolean running = true;
+	public boolean running = false;
 	private static int USER_LIMIT = 10;
 	webftp.Server parentServer;
 	
@@ -79,6 +79,7 @@ public class EarlGray extends Thread {
 			this.out = new PrintWriter(new BufferedWriter(new FileWriter(inFile, true)));
 			this.incoming = new ServerSocket(portNumber); // create server socket on designated port
 			CNT_FTP_PORT = incoming.getLocalPort();
+			this.running = true;
 		} catch (IOException e) {
 			e.printStackTrace();                  // print error stack
 		}
@@ -186,16 +187,19 @@ public class EarlGray extends Thread {
 	 * @exception IOException
 	 */
 	public boolean stopServer() throws IOException {
-		this.running = false;
-		for (EGClientInst client : clientInstList) {
-			while (!client.shutThingsDown(1)); // wait for the client to shut down before proceeding
-		}
-		out.close();
-//		System.out.println("All client sessions have been terminated.\nStopping server.");
-		try {
-			this.join(100);                    // let the thread die
-		} catch (InterruptedException e) {
-			e.printStackTrace();               // print error stack
+		if (this.running == true) {
+			this.running = false;
+			for (EGClientInst client : clientInstList) {
+				while (!client.shutThingsDown(1)); // wait for the client to shut down before proceeding
+			}
+			out.close();
+	//		System.out.println("All client sessions have been terminated.\nStopping server.");
+			try {
+				this.join(100);                    // let the thread die
+			} catch (InterruptedException e) {
+				e.printStackTrace();               // print error stack
+			}
+			return true;
 		}
 		return true;
 	}
