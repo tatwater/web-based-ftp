@@ -10,8 +10,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-//TODO add parent webftp server as attribute
-	//TODO allow parent to close jhttp server
 	//TODO allow parent jhttp to communicate to parent
 	//TODO allow parent to tell jhttp server that login of FTP user is good
 
@@ -34,6 +32,7 @@ public class HTTPServer extends Thread {
 	int requestCnt = 0;
 	// version: {major, minor}
 	int[] version = {1, 1};
+	private webftp.Server parentServer;
 
 	/**
 	 * Create new instance of HTTPServer
@@ -44,10 +43,11 @@ public class HTTPServer extends Thread {
 	 * @param directoryPath (path from computer root to server root directory)
 	 * @since Alpha
 	 */
-	public HTTPServer(int newPort, String directoryPath) throws IOException {
+	public HTTPServer(int newPort, String directoryPath, webftp.Server parentServer) throws IOException {
 		this.activeClients = new ArrayList<HTTPClient>();
 		HTTPServer.PORT = newPort;
 		this.directory = new File(directoryPath);
+		this.parentServer = parentServer;
 		if (!this.directory.isDirectory()) {
 			this.directory.mkdir();
 		}
@@ -69,6 +69,7 @@ public class HTTPServer extends Thread {
 	 * @author Jake Junda
 	 * @since Alpha
 	 */
+	/*
 	public static void main(String[] args) throws Exception {
 		boolean portProvided = false;
 		int tempPort = 80;
@@ -117,6 +118,7 @@ public class HTTPServer extends Thread {
 		in.close();
 //		System.exit(0); // Shut down the JVM
 	}
+	*/
 	
 	/**
 	 * Wait for clients to connect to the server, then creates a socket and
@@ -132,7 +134,7 @@ public class HTTPServer extends Thread {
 		try {
 			while (running) {
 				Socket clientSoc = incoming.accept(); // Wait for new connection
-				HTTPClient clientInst = new HTTPClient(clientSoc, this, this.directory, this.requestCnt); // Create new session on socket
+				HTTPClient clientInst = new HTTPClient(clientSoc, this, this.directory, this.requestCnt, this.parentServer); // Create new session on socket
 				requestCnt++;
 				if (activeClients.size() > USER_LIMIT){
 					clientInst.shutThingsDown(0);
