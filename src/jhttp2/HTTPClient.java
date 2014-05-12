@@ -34,8 +34,6 @@ public class HTTPClient extends Thread {
 	ArrayList<String> input = new ArrayList<String>();
 	private webftp.Server parentServer;
 
-
-	//TODO need to create a get function, for dealing with the webFtp Server.
 	
 	/**
 	 * This constructs a Thread that

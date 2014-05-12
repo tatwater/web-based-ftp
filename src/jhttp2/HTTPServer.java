@@ -9,8 +9,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-	//TODO allow parent jhttp to communicate to parent
-	//TODO allow parent to tell jhttp server that login of FTP user is good
 
 /*
  * Authors: Tony Knapp, Teagan Atwater, Jake Junda
