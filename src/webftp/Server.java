@@ -33,7 +33,7 @@ public class Server extends Thread {
 		this.httpServer = new HTTPServer(httpPort, directoryPath, this);
 		System.out.println("HTTP initialized.");
 		this.httpServer.start();
-		System.out.println("HTTP started.");
+//		System.out.println("HTTP started.");
 //		System.out.print("HTTP started.\nInitializing FTP... ");
 		this.ftpServer = new EarlGray(directoryPath, this);
 //		System.out.println("FTP initialized.\nTo start FTP, use web service: 'localhost/admin/'.");
