@@ -1,10 +1,10 @@
-#Web-Based FTP#
+# Web-Based FTP
 
 
 A Java implementation of a HTTP server with FTP web client
 
-##Assignemnt:##
-#####Web-based FTP Server#####
+## Assignemnt:
+##### Web-based FTP Server
 
 Goal: For the final project, you are required to put your previous work together and make a web-based FTP server.
 
